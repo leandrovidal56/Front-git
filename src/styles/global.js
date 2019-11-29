@@ -15,6 +15,7 @@ html, body, #root {
 
 body {
   background: #38D430;
+
 }
 
 body, input button {

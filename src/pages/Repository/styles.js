@@ -22,8 +22,12 @@ export const Owner = styled.header`
   }
 
   h1 {
-    font-size: 24px;
     margin-top: 10px;
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block
   }
 
   p {

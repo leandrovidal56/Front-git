@@ -37,6 +37,7 @@ class Dashboard extends Component {
       e.target.value
     });
   };
+
   handleSubmit = async e => {
     try {
           e.preventDefault();
@@ -53,10 +54,10 @@ class Dashboard extends Component {
           })
         }
     catch(err) {
-        toast.error('Please enter a company valid cia and repositories');
-        this.setState({
-          newRepository: '',
-        })
+      this.setState({
+        newRepository: '',
+      })
+      toast.error('Please enter a company valid cia and repositories');
         this.setState({loading: false})
         }
     }

@@ -71,5 +71,13 @@ export const List = styled.ul`
     color: #38D430;
     text-decoration: none;
   }
+
+  span {
+  max-width: 550px; /* Tamanho */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+  }
+
   }
 `;
