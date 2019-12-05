@@ -24,55 +24,81 @@ class Dashboard extends Component {
     }
   }
 
-  componentDidUpdate( _, prevState) {
+  async componentDidUpdate( _, prevState) {
     const { repositories } = this.state;
 
     if (prevState.repositories !== repositories) {
       localStorage.setItem('repositories', JSON.stringify(repositories))
     }
-  }
+   }
 
-  handleInputChange = e => {
+    handleInputChange = e => {
     this.setState({ newRepository:
       e.target.value
     });
   };
+
+
+  errors = (e) => {
+    toast.error(e);
+    this.setState({
+      newRepository: '',
+      loading: false,
+    })
+  }
+
 
   handleSubmit = async e => {
     try {
           e.preventDefault();
           this.setState({ loading: true});
           const { newRepository, repositories}  = this.state;
-          const response = await api.get(`/repos/${newRepository}`)
-          const data = {
+            const response = await api.get(`/repos/${newRepository}`)
+
+            const data = {
             name: response.data.full_name,
-          };
+          }
+
+          ;
+
+
           this.setState({
             repositories: [...repositories, data ],
-            newRepository: '',
             loading: false,
+            newRepository: '',
           })
         }
-    catch(err) {
-      this.setState({
-        newRepository: '',
-      })
-      toast.error('Please enter a company valid cia and repositories');
-        this.setState({loading: false})
+    catch(err)  {
+        console.log(err.response);
+        if(err.response.status === 404){
+          this.errors('Please enter a company valid cia and repositories')
+          return;
         }
+
+        if(err.response.status === 403 && err.response.statusText === 'Forbidden') {
+          this.errors('retry limit higher than normal, try again later')
+          return;
+        }
+
+        this.errors('Something went wrong, try again!');
+      }
     }
-  handleAddRepositories = newRepository => {
-    const {dispatch} = this.props;
+
+
+
+
+
+
+  handleAddRepositories =  newRepository  => {
+     const  {dispatch} = this.props;
     dispatch({
       type: 'ADD_TO_LIST',
       newRepository,
     });
   };
 
-
   render() {
     const { newRepository, repositories, loading } = this.state;
-
 
     return (
     <Container>
@@ -87,6 +113,7 @@ class Dashboard extends Component {
             onChange={this.handleInputChange}
             required="Campo obrigatório"
            /> }
+
          <SubmitButton
            onClick={ () =>this.handleAddRepositories(newRepository)}>
            { loading ? (
@@ -100,7 +127,9 @@ class Dashboard extends Component {
             {repositories.map(repository => (
               <li key={repository.name} >
                 <span>{CombineReducers&&repository.name}</span>
-                <Link to={`/repositories/${encodeURIComponent(repository.name)}`}>Details</Link>
+                <Link to={`/repositories/${encodeURIComponent(repository.name)}`}>Details
+                </Link>
+
               </li>
               ))}
          </List>
